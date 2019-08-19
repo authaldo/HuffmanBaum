@@ -36,7 +36,7 @@ private:
     unsigned int depth;
 
     //Hilfsmethode für rekursive Berechnung des Mappings
-    void getMapping(std::string prefix, std::map<char, std::string> &map) const;
+    void getMapping(const std::string &prefix, std::map<char, std::string> &map) const;
 };
 
 #endif //HUFFMAN_NODE_H

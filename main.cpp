@@ -10,7 +10,7 @@
 /**
  * Vergleichsmethode für zwei shared_ptr<HuffmanNode>
  */
-auto nodePtrCmp = [](const std::shared_ptr<HuffmanNode> ptr1, const std::shared_ptr<HuffmanNode> ptr2) {
+auto nodePtrCmp = [](std::shared_ptr<const HuffmanNode> ptr1,std::shared_ptr<const HuffmanNode> ptr2) {
     //Zweistufiger Vergleich, damit auch bei gleicher Zahl von Vorkommen ein Unterschied vorhanden ist
     if(ptr1->getOcc() != ptr2->getOcc()) {
         return ptr1->getOcc() < ptr2->getOcc();
@@ -21,12 +21,14 @@ auto nodePtrCmp = [](const std::shared_ptr<HuffmanNode> ptr1, const std::shared_
     }
 };
 
-typedef std::set<std::shared_ptr<HuffmanNode>, decltype(nodePtrCmp)> HuffmanSet;
+using HuffmanSet = std::set<std::shared_ptr<HuffmanNode>, decltype(nodePtrCmp)>;
 
+#ifdef DEBUG
 void displaySet(const HuffmanSet &set);
+#endif
 
 int main(int argc, const char* argv[]) {
-    std::string path = (argc == 2) ? std::string(argv[1]) : "../data.txt";
+    std::string path = (argc == 2) ? argv[1] : "../data.txt";
 
     //Einlesen und absolute Häufigkeiten bestimmmen
     std::ifstream file(path);
@@ -66,7 +68,7 @@ int main(int argc, const char* argv[]) {
     while (set.size() > 1) {
         auto it1 = set.begin();
         auto it2 = it1; it2++;
-        std::shared_ptr<HuffmanNode> node = std::make_shared<HuffmanNode>(*it1, *it2);
+        auto node = std::make_shared<HuffmanNode>(*it1, *it2);
         set.erase(it1);
         set.erase(it2);
         set.insert(node);
@@ -74,7 +76,7 @@ int main(int argc, const char* argv[]) {
         displaySet(set);
 #endif
     }
-    std::map<char, std::string> mapping = (*(set.begin()))->getMapping();
+    auto mapping = (*(set.begin()))->getMapping();
     std::cout << "\n\nBerechnete Codierung: " << std::endl;
     for (auto &p : mapping) {
         std::cout << p.first << " -> " << p.second << std::endl;

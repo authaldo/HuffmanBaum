@@ -10,8 +10,8 @@
  * @param c Buchstabe
  * @param occ Häufigkeit
  */
-HuffmanNode::HuffmanNode(char c, unsigned long occ) : c(c), occ(occ), leftTree(nullptr), rightTree(nullptr), depth(0) {
-    ;
+HuffmanNode::HuffmanNode(char c, unsigned long occ) : leftTree(nullptr), rightTree(nullptr), c(c), occ(occ), depth(0) {
+
 }
 
 /**
@@ -19,7 +19,7 @@ HuffmanNode::HuffmanNode(char c, unsigned long occ) : c(c), occ(occ), leftTree(n
  * @param left linker Kindknoten
  * @param right rechter Kindknoten
  */
-HuffmanNode::HuffmanNode(std::shared_ptr<HuffmanNode> left, std::shared_ptr<HuffmanNode> right) : leftTree(left), rightTree(right), c(255), occ(left->getOcc() + right->getOcc()) {
+HuffmanNode::HuffmanNode(std::shared_ptr<HuffmanNode> left, std::shared_ptr<HuffmanNode> right) : leftTree(left), rightTree(right), c(100), occ(left->getOcc() + right->getOcc()) {
     depth = std::max(left->getDepth(), right->getDepth()) + 1;
 }
 
@@ -70,13 +70,15 @@ auto HuffmanNode::getMapping() const -> std::map<char, std::string> {
  * @param prefix
  * @param map
  */
-void HuffmanNode::getMapping(std::string prefix, std::map<char, std::string> &map) const {
+void HuffmanNode::getMapping(const std::string &prefix, std::map<char, std::string> &map) const {
     if (leftTree == nullptr && rightTree == nullptr) {
+        std::pair<char, std::string> toIns;
         if (!prefix.empty()) {
-            map.insert(std::pair<char, std::string>(this->c, prefix));
+            toIns = std::make_pair(this->c, prefix);
         } else {
-            map.insert(std::pair<char, std::string>(this->c, std::string("0")));
+            toIns = std::make_pair(this->c, "0");
         }
+        map.insert(toIns);
     } else {
         leftTree->getMapping(prefix + "1", map);
         rightTree->getMapping(prefix + "0", map);
